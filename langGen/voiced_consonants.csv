@@ -1,0 +1,9 @@
+, bilabial, labiodental, dental, alveolar, postalveolar, retroflex, palatal, velar, uvular, pharyngal, glottal
+plosive,b,,,d,ɖ,ɟ,ɡ,ɢ,,,
+nasal,m,ɱ,n,,ɳ,,ɲ,ŋ,ɴ,,
+trill,ʙ,,r,,,,ʀ,,
+tap,,ⱱ,,ɾ,,ɽ,,,,,
+fricative,β,v,ð,z,ʒ,ʐ,ʝ,ɣ,ʁ,ʕ,ɦ
+lateral_fricative,,,,ɮ,,,,,,,
+approximant,,ʋ,,ɹ,,ɻ,ç,ɰ,,,
+lateral_approximant,,,,l,,ɭ,ʎ,ʟ,,,

@@ -3,40 +3,96 @@ import re
 from itertools import product
 from random import sample
 
-class Consonants:
-    def __init__(self,csv_file) -> None:
+class Phones:
+
+    def __init__(self,voiced_cons_csv_file: str, voiceless_cons_csv_file: str, vowels_csv_file: str, syll_struct: str) -> None:
+
+        self.syll_struct = rf"{syll_struct}" # define syllable structure with regex
+        
         # Read consonants csv into dataframe, label columns
-        self.phonesC = pd.read_csv(csv_file)
-        self.phonesC.columns = ['place','bilabial','labiodental','dental','alveolar','postalveolar','retroflex',
+        self.phonesVC = pd.read_csv(voiced_cons_csv_file)
+        self.phonesVC.columns = ['place','bilabial','labiodental','dental','alveolar','postalveolar','retroflex',
                                'palatal','velar','uvular','pharyngal','glottal']
+
+        self.phonesVLESSC = pd.read_csv(voiceless_cons_csv_file)
+        self.phonesVLESSC.columns = ['place', 'bilabial', 'labiodental', 'dental', 'alveolar', 'postalveolar', 'retroflex',
+                                 'palatal', 'velar', 'uvular', 'pharyngal', 'glottal']
         # Convert columns into plain Python arrays, we don't need NP arrays
-        self.place_of_articulation = self.phonesC.place.to_list()
-        self.bilabial = self.phonesC.bilabial.to_list()
-        self.labiodental = self.phonesC.labiodental.to_list()
-        self.dental = self.phonesC.dental.to_list()
-        self.alveolar = self.phonesC.alveolar.to_list()
-        self.postalveolar = self.phonesC.postalveolar.to_list()
-        self.retroflex = self.phonesC.retroflex.to_list()
-        self.palatal = self.phonesC.palatal.to_list()
-        self.velar = self.phonesC.velar.to_list()
-        self.uvular = self.phonesC.uvular.to_list()
-        self.pharyngal = self.phonesC.pharyngal.to_list()
-        self.glottal = self.phonesC.pharyngal.to_list()
+        self.place_of_articulation = self.phonesVC.place.to_list()
+        self.bilabial = self.phonesVC.bilabial.to_list() + self.phonesVLESSC.bilabial.to_list()
+        self.labiodental = self.phonesVC.labiodental.to_list() + self.phonesVLESSC.labiodental.to_list()
+        self.dental = self.phonesVC.dental.to_list() + self.phonesVLESSC.dental.to_list()
+        self.alveolar = self.phonesVC.alveolar.to_list() + self.phonesVLESSC.alveolar.to_list()
+        self.postalveolar = self.phonesVC.postalveolar.to_list() + self.phonesVLESSC.postalveolar.to_list()
+        self.retroflex = self.phonesVC.retroflex.to_list() + self.phonesVLESSC.retroflex.to_list()
+        self.palatal = self.phonesVC.palatal.to_list() + self.phonesVLESSC.palatal.to_list()
+        self.velar = self.phonesVC.velar.to_list() + self.phonesVLESSC.velar.to_list()
+        self.uvular = self.phonesVC.uvular.to_list() + self.phonesVLESSC.uvular.to_list()
+        self.pharyngal = self.phonesVC.pharyngal.to_list() + self.phonesVLESSC.pharyngal.to_list()
+        self.glottal = self.phonesVC.glottal.to_list() + self.phonesVLESSC.glottal.to_list()
         # Do same conversion for rows, process is different because of Pandas weirdness
-        self.plosive = self.phonesC.iloc[[0]].values.flatten().tolist()
-        self.nasal = self.phonesC.iloc[[1]].values.flatten().tolist()
-        self.trill = self.phonesC.iloc[[2]].values.flatten().tolist()
-        self.tap = self.phonesC.iloc[[3]].values.flatten().tolist()
-        self.fricative = self.phonesC.iloc[[4]].values.flatten().tolist()
-        self.lateral_fricative = self.phonesC.iloc[[5]].values.flatten().tolist()
-        self.approximant = self.phonesC.iloc[[6]].values.flatten().tolist()
-        self.lateral_approximant = self.phonesC.iloc[[7]].values.flatten().tolist()
+        self.plosive = self.phonesVC.iloc[[0]].values.flatten().tolist() + self.phonesVLESSC.iloc[[0]].values.flatten().tolist()
+        self.nasal = self.phonesVC.iloc[[1]].values.flatten().tolist() + self.phonesVLESSC.iloc[[1]].values.flatten().tolist()
+        self.trill = self.phonesVC.iloc[[2]].values.flatten().tolist() + self.phonesVLESSC.iloc[[2]].values.flatten().tolist()
+        self.tap = self.phonesVC.iloc[[3]].values.flatten().tolist() + self.phonesVLESSC.iloc[[3]].values.flatten().tolist()
+        self.fricative = self.phonesVC.iloc[[4]].values.flatten().tolist() + self.phonesVLESSC.iloc[[4]].values.flatten().tolist()
+        self.lateral_fricative = self.phonesVC.iloc[[5]].values.flatten().tolist() + self.phonesVLESSC.iloc[[5]].values.flatten().tolist()
+        self.approximant = self.phonesVC.iloc[[6]].values.flatten().tolist() + self.phonesVLESSC.iloc[[6]].values.flatten().tolist()
+        self.lateral_approximant = self.phonesVC.iloc[[7]].values.flatten().tolist() + self.phonesVLESSC.iloc[[7]].values.flatten().tolist()
+        
+        self.all_consonants = self.plosive + self.nasal + self.trill + self.tap + self.fricative + \
+                              self.lateral_fricative + self.approximant + self.lateral_approximant
 
-
-        # Read vowels CSV into seperate dataframe
-        self.phonesV = pd.read_csv(csv_file)
+        # Read vowels CSV into dataframe
+        self.phonesV = pd.read_csv(vowels_csv_file)
         self.phonesV.columns = ['vowels','closeness','frontness','roundness']
-        self.vowels = self.phonesV.vowels.to_list()
+        self.all_vowels = self.phonesV.vowels.to_list()
         self.closeness = self.phonesV.closeness.to_list()
         self.frontness = self.phonesV.frontness.to_list()
         self.roundness = self.phonesV.roundness.to_list()
+
+    def __clean__(data: iter) -> iter:
+
+        NaN = re.compile(r'^NaN$')
+        any_single_char = re.compile(r"^([^\s])$'")
+        clean_list = [str(datum) for datum in data if not re.match(NaN,str(datum)) and re.match(any_single_char, str(datum))]
+
+        return clean_list
+
+    def make_sylls (self, size:int) -> list:
+        
+        # Takes a list of consonants, a list of vowels, a regex (syll_struct),
+        # and an integer (size). as arguments. Function will generate the Cartesian product of 
+        # the consonants and vowels lists, then sort through the resulting strings for ones which 
+        # match the regex. Randomly sampled list of matches up to the size of the "size" 
+        # argument is returned.
+        cons = [str(c) for c in self.all_consonants]
+        vowels = [str(v) for v in self.all_vowels]
+        syll_stuct = re.compile(rf"{self.syll_struct}")
+        cartesian_product = product(cons,vowels,vowels,cons)
+
+        def join_tuple_strings(list_of_tuples):
+            return (''.join(list_of_tuples)) # helper function to make getting the strings from the tuples easier
+
+        #potential_sylls = list(map(join_tuple_strings, cartesian_product))
+
+        sylls = set()
+
+        for combination in cartesian_product:
+            syll = join_tuple_strings(combination)
+
+            if re.match(self.syll_struct, syll):
+                sylls.add(syll)
+
+                # Stop if we have enough valid combinations
+                if len(sylls) >= size:
+                    break
+        #print(sorted(list(sylls)))
+        return sorted(list(sylls))
+
+if __name__ == '__main__':
+
+    test_object = Phones('voiced_consonants.csv', 'voiceless_consonants.csv', 'vowels.csv',
+    syll_struct= "[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?")
+    test_inventory = test_object.make_sylls(200)
+    print(test_inventory)

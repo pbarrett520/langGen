@@ -20,4 +20,4 @@ for item in potential_sylls:
     if syll != None and syll.group() not in sylls:
         sylls.append(syll.group())
 
-print(sorted(sample(sylls,250)))
+print(sorted(sample(sylls, 250)))

@@ -51,7 +51,7 @@ class Phones:
         self.frontness = self._clean(self.phonesV.frontness.to_list())
         self.roundness = self._clean(self.phonesV.roundness.to_list())
 
-    # Function clears extra strings leftover by NaN values in the lists
+    # Function clears extra strings leftover by NaN values in the lists, also makes sure other naughty strings don't wind up in here on accident
     def _clean(self, data: iter) -> iter:
 
         NaN = re.compile(r'^NaN$')
@@ -75,8 +75,6 @@ class Phones:
         def join_tuple_strings(list_of_tuples):
             return (''.join(list_of_tuples)) # helper function to make getting the strings from the tuples easier
 
-        #potential_sylls = list(map(join_tuple_strings, cartesian_product))
-
         sylls = list()
 
         for combination in cartesian_product:
@@ -85,15 +83,13 @@ class Phones:
             if re.match(self.syll_struct, syll):
                 sylls.append(syll)
 
-                # Stop if we have enough valid combinations
-                if len(sylls) == size:
-                    break
 
-        return sorted(list(sylls))
+        return sorted(sample(sylls,size))
 
 if __name__ == '__main__':
 
     test_object = Phones('voiced_consonants.csv', 'voiceless_consonants.csv', 'vowels.csv',
     syll_struct= "[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?")
-    test_inventory = test_object.make_sylls(5)
+    test_inventory = test_object.make_sylls(10)
     print(test_inventory)
+    print(test_object.bilabial)

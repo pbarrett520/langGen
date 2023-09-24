@@ -77,13 +77,13 @@ class Phones:
 
         #potential_sylls = list(map(join_tuple_strings, cartesian_product))
 
-        sylls = set()
+        sylls = list()
 
         for combination in cartesian_product:
             syll = join_tuple_strings(combination)
 
             if re.match(self.syll_struct, syll):
-                sylls.add(syll)
+                sylls.append(syll)
 
                 # Stop if we have enough valid combinations
                 if len(sylls) == size:
@@ -95,5 +95,5 @@ if __name__ == '__main__':
 
     test_object = Phones('voiced_consonants.csv', 'voiceless_consonants.csv', 'vowels.csv',
     syll_struct= "[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?")
-    test_inventory = test_object.make_sylls(200)
+    test_inventory = test_object.make_sylls(5)
     print(test_inventory)

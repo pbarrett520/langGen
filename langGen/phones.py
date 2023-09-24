@@ -18,43 +18,44 @@ class Phones:
         self.phonesVLESSC.columns = ['place', 'bilabial', 'labiodental', 'dental', 'alveolar', 'postalveolar', 'retroflex',
                                  'palatal', 'velar', 'uvular', 'pharyngal', 'glottal']
         # Convert columns into plain Python arrays, we don't need NP arrays
-        self.place_of_articulation = self.phonesVC.place.to_list()
-        self.bilabial = self.phonesVC.bilabial.to_list() + self.phonesVLESSC.bilabial.to_list()
-        self.labiodental = self.phonesVC.labiodental.to_list() + self.phonesVLESSC.labiodental.to_list()
-        self.dental = self.phonesVC.dental.to_list() + self.phonesVLESSC.dental.to_list()
-        self.alveolar = self.phonesVC.alveolar.to_list() + self.phonesVLESSC.alveolar.to_list()
-        self.postalveolar = self.phonesVC.postalveolar.to_list() + self.phonesVLESSC.postalveolar.to_list()
-        self.retroflex = self.phonesVC.retroflex.to_list() + self.phonesVLESSC.retroflex.to_list()
-        self.palatal = self.phonesVC.palatal.to_list() + self.phonesVLESSC.palatal.to_list()
-        self.velar = self.phonesVC.velar.to_list() + self.phonesVLESSC.velar.to_list()
+        self.place_of_articulation = self._clean(self.phonesVC.place.to_list())
+        self.bilabial = self._clean(self.phonesVC.bilabial.to_list() + self.phonesVLESSC.bilabial.to_list())
+        self.labiodental = self._clean(self.phonesVC.labiodental.to_list() + self.phonesVLESSC.labiodental.to_list())
+        self.dental = self._clean(self.phonesVC.dental.to_list() + self.phonesVLESSC.dental.to_list())
+        self.alveolar = self._clean(self.phonesVC.alveolar.to_list() + self.phonesVLESSC.alveolar.to_list())
+        self.postalveolar = self._clean(self.phonesVC.postalveolar.to_list() + self.phonesVLESSC.postalveolar.to_list())
+        self.retroflex = self._clean(self.phonesVC.retroflex.to_list() + self.phonesVLESSC.retroflex.to_list())
+        self.palatal = self._clean(self.phonesVC.palatal.to_list() + self.phonesVLESSC.palatal.to_list())
+        self.velar = self._clean(self.phonesVC.velar.to_list() + self.phonesVLESSC.velar.to_list())
         self.uvular = self.phonesVC.uvular.to_list() + self.phonesVLESSC.uvular.to_list()
-        self.pharyngal = self.phonesVC.pharyngal.to_list() + self.phonesVLESSC.pharyngal.to_list()
-        self.glottal = self.phonesVC.glottal.to_list() + self.phonesVLESSC.glottal.to_list()
+        self.pharyngal = self._clean(self.phonesVC.pharyngal.to_list() + self.phonesVLESSC.pharyngal.to_list())
+        self.glottal = self._clean(self.phonesVC.glottal.to_list() + self.phonesVLESSC.glottal.to_list())
         # Do same conversion for rows, process is different because of Pandas weirdness
-        self.plosive = self.phonesVC.iloc[[0]].values.flatten().tolist() + self.phonesVLESSC.iloc[[0]].values.flatten().tolist()
-        self.nasal = self.phonesVC.iloc[[1]].values.flatten().tolist() + self.phonesVLESSC.iloc[[1]].values.flatten().tolist()
-        self.trill = self.phonesVC.iloc[[2]].values.flatten().tolist() + self.phonesVLESSC.iloc[[2]].values.flatten().tolist()
-        self.tap = self.phonesVC.iloc[[3]].values.flatten().tolist() + self.phonesVLESSC.iloc[[3]].values.flatten().tolist()
-        self.fricative = self.phonesVC.iloc[[4]].values.flatten().tolist() + self.phonesVLESSC.iloc[[4]].values.flatten().tolist()
-        self.lateral_fricative = self.phonesVC.iloc[[5]].values.flatten().tolist() + self.phonesVLESSC.iloc[[5]].values.flatten().tolist()
-        self.approximant = self.phonesVC.iloc[[6]].values.flatten().tolist() + self.phonesVLESSC.iloc[[6]].values.flatten().tolist()
-        self.lateral_approximant = self.phonesVC.iloc[[7]].values.flatten().tolist() + self.phonesVLESSC.iloc[[7]].values.flatten().tolist()
+        self.plosive = self._clean(self.phonesVC.iloc[[0]].values.flatten().tolist() + self.phonesVLESSC.iloc[[0]].values.flatten().tolist())
+        self.nasal = self._clean(self.phonesVC.iloc[[1]].values.flatten().tolist() + self.phonesVLESSC.iloc[[1]].values.flatten().tolist())
+        self.trill = self._clean(self.phonesVC.iloc[[2]].values.flatten().tolist() + self.phonesVLESSC.iloc[[2]].values.flatten().tolist())
+        self.tap = self._clean(self.phonesVC.iloc[[3]].values.flatten().tolist() + self.phonesVLESSC.iloc[[3]].values.flatten().tolist())
+        self.fricative = self._clean(self.phonesVC.iloc[[4]].values.flatten().tolist() + self.phonesVLESSC.iloc[[4]].values.flatten().tolist())
+        self.lateral_fricative = self._clean(self.phonesVC.iloc[[5]].values.flatten().tolist() + self.phonesVLESSC.iloc[[5]].values.flatten().tolist())
+        self.approximant = self._clean(self.phonesVC.iloc[[6]].values.flatten().tolist() + self.phonesVLESSC.iloc[[6]].values.flatten().tolist())
+        self.lateral_approximant = self._clean(self.phonesVC.iloc[[7]].values.flatten().tolist() + self.phonesVLESSC.iloc[[7]].values.flatten().tolist())
         
-        self.all_consonants = self.plosive + self.nasal + self.trill + self.tap + self.fricative + \
-                              self.lateral_fricative + self.approximant + self.lateral_approximant
+        self.all_consonants = self._clean( self.plosive + self.nasal + self.trill + self.tap + self.fricative + \
+                              self.lateral_fricative + self.approximant + self.lateral_approximant)
 
         # Read vowels CSV into dataframe
         self.phonesV = pd.read_csv(vowels_csv_file)
         self.phonesV.columns = ['vowels','closeness','frontness','roundness']
-        self.all_vowels = self.phonesV.vowels.to_list()
-        self.closeness = self.phonesV.closeness.to_list()
-        self.frontness = self.phonesV.frontness.to_list()
-        self.roundness = self.phonesV.roundness.to_list()
+        self.all_vowels = self._clean(self.phonesV.vowels.to_list())
+        self.closeness = self._clean(self.phonesV.closeness.to_list())
+        self.frontness = self._clean(self.phonesV.frontness.to_list())
+        self.roundness = self._clean(self.phonesV.roundness.to_list())
 
-    def __clean__(data: iter) -> iter:
+    # Function clears extra strings leftover by NaN values in the lists
+    def _clean(self, data: iter) -> iter:
 
         NaN = re.compile(r'^NaN$')
-        any_single_char = re.compile(r"^([^\s])$'")
+        any_single_char = re.compile(r"^([^\s])$")
         clean_list = [str(datum) for datum in data if not re.match(NaN,str(datum)) and re.match(any_single_char, str(datum))]
 
         return clean_list
@@ -85,9 +86,9 @@ class Phones:
                 sylls.add(syll)
 
                 # Stop if we have enough valid combinations
-                if len(sylls) >= size:
+                if len(sylls) == size:
                     break
-        #print(sorted(list(sylls)))
+
         return sorted(list(sylls))
 
 if __name__ == '__main__':

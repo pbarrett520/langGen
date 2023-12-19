@@ -3,12 +3,15 @@ import re
 from itertools import product
 from random import sample
 
+class Syllable_patterns:
+
+    polyneisian = r"[ptkfsbdgvznmʔ]?[ɑeiouə]?[ɑeiouə][ʔnm]?"
 class Phones:
 
     def __init__(self,voiced_cons_csv_file: str, voiceless_cons_csv_file: str, vowels_csv_file: str, syll_struct: str) -> None:
 
         self.syll_struct = rf"{syll_struct}" # define syllable structure with regex
-        
+        self.syll_inventory = list() # list to be populated later when make_sylls() is called
         # Read consonants csv into dataframe, label columns
         self.phonesVC = pd.read_csv(voiced_cons_csv_file)
         self.phonesVC.columns = ['place','bilabial','labiodental','dental','alveolar','postalveolar','retroflex',
@@ -51,7 +54,8 @@ class Phones:
         self.frontness = self._clean(self.phonesV.frontness.to_list())
         self.roundness = self._clean(self.phonesV.roundness.to_list())
 
-    # Function clears extra strings leftover by NaN values in the lists, also makes sure other naughty strings don't wind up in here on accident
+    # Function clears extra strings leftover by NaN values in the lists,
+    # also makes sure other naughty strings don't wind up in here on accident
     def _clean(self, data: iter) -> iter:
 
         NaN = re.compile(r'^NaN$')
@@ -83,13 +87,16 @@ class Phones:
             if re.match(self.syll_struct, syll):
                 sylls.append(syll)
 
+        syll_inventory = sorted(sample(sylls,size))
+        self.syll_inventory = syll_inventory
 
-        return sorted(sample(sylls,size))
+        return syll_inventory
 
 if __name__ == '__main__':
 
     test_object = Phones('voiced_consonants.csv', 'voiceless_consonants.csv', 'vowels.csv',
     syll_struct= "[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?")
+
     test_inventory = test_object.make_sylls(10)
     print(test_inventory)
     print(test_object.bilabial)

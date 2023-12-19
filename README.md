@@ -4,9 +4,9 @@ This project is my humble attempt to try to emulate some of the functionalities 
 
 # Features so far:
 
-- logic for reading csv files of phonemes, placing consonants intop grouping by both place and manner of articulation
-- additional logic for parsing csv files with vowels in to ordered groupings based on their properties
-- a simple utility for generating syllable vocabularies of an arbitatry length
+- logic for reading csv files of phonemes, placing consonants into grouping by both place and manner of articulation
+- additional logic for parsing csv files with vowels into ordered groupings based on their properties
+- a simple utility for generating syllable vocabularies of an arbitrary length
 
 # Features to be implemented:
 
@@ -16,7 +16,7 @@ This project is my humble attempt to try to emulate some of the functionalities 
 
 # Demo:
 
-Instantiate an object by passing the paths for the voiceless consonants, voiced consonants, and vowels, as well as the regex to define the desired syllable structure, like so:
+Instantiate an object by passing in the paths for the voiceless consonants, voiced consonants, and vowels, as well as the regex to define the desired syllable structure, like so:
 
 ```python3
 demo_object = Phones('voiced_consonants.csv', 'voiceless_consonants.csv', 'vowels.csv',

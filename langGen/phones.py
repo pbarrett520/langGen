@@ -6,8 +6,10 @@ from random import sample
 class Syllable_patterns:
 
     polyneisian = r"[ptkfsbdgvznmʔ]?[ɑeiouə]?[ɑeiouə][ʔnm]?"
-class Phones:
+    south_sinitic = r"[ptkbdgtsdztʃʔmnŋlɻjw]?[aeiouyɑɛɪʊœɐɚɤøəɨʉɛ̃ɔ̃ãõĩũ][ptkbdgʔmnŋl]?"
+    north_sinitic = r"[ptkbdgʈʂʐtsdzɕʑtʃʔmnŋlɻjw]?[aeiouyɑɛɪʊœɐɚɤøəɨʉɛ̃ɔ̃ãõĩũ][ʔnŋ]
 
+class Phones:
     def __init__(self,voiced_cons_csv_file: str, voiceless_cons_csv_file: str, vowels_csv_file: str, syll_struct: str) -> None:
 
         self.syll_struct = rf"{syll_struct}" # define syllable structure with regex
@@ -91,12 +93,3 @@ class Phones:
         self.syll_inventory = syll_inventory
 
         return syll_inventory
-
-if __name__ == '__main__':
-
-    test_object = Phones('voiced_consonants.csv', 'voiceless_consonants.csv', 'vowels.csv',
-    syll_struct= "[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?")
-
-    test_inventory = test_object.make_sylls(10)
-    print(test_inventory)
-    print(test_object.bilabial)

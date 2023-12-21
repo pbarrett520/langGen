@@ -7,7 +7,7 @@ class Syllable_patterns:
 
     polyneisian = r"[ptkfsbdgvznmʔ]?[ɑeiouə]?[ɑeiouə][ʔnm]?"
     south_sinitic = r"[ptkbdgtsdztʃʔmnŋlɻjw]?[aeiouyɑɛɪʊœɐɚɤøəɨʉɛ̃ɔ̃ãõĩũ][ptkbdgʔmnŋl]?"
-    north_sinitic = r"[ptkbdgʈʂʐtsdzɕʑtʃʔmnŋlɻjw]?[aeiouyɑɛɪʊœɐɚɤøəɨʉɛ̃ɔ̃ãõĩũ][ʔnŋ]
+    north_sinitic = r"[ptkbdgʈʂʐtsdzɕʑtʃʔmnŋlɻjw]?[aeiouyɑɛɪʊœɐɚɤøəɨʉɛ̃ɔ̃ãõĩũ][ʔnŋ]"
 
 class Phones:
     def __init__(self,voiced_cons_csv_file: str, voiceless_cons_csv_file: str, vowels_csv_file: str, syll_struct: str) -> None:

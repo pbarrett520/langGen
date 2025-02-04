@@ -3,6 +3,7 @@ import re
 from itertools import product
 from random import sample
 
+<<<<<<< HEAD
 
 class Phones:
 
@@ -16,6 +17,19 @@ class Phones:
 
         self.syll_struct = rf"{syll_struct}"  # define syllable structure with regex
 
+=======
+class Syllable_patterns:
+
+    polyneisian = r"[ptkfsbdgvznmʔ]?[ɑeiouə]?[ɑeiouə][ʔnm]?"
+    south_sinitic = r"[ptkbdgtsdztʃʔmnŋlɻjw]?[aeiouyɑɛɪʊœɐɚɤøəɨʉɛ̃ɔ̃ãõĩũ][ptkbdgʔmnŋl]?"
+    north_sinitic = r"[ptkbdgʈʂʐtsdzɕʑtʃʔmnŋlɻjw]?[aeiouyɑɛɪʊœɐɚɤøəɨʉɛ̃ɔ̃ãõĩũ][ʔnŋ]"
+
+class Phones:
+    def __init__(self,voiced_cons_csv_file: str, voiceless_cons_csv_file: str, vowels_csv_file: str, syll_struct: str) -> None:
+
+        self.syll_struct = rf"{syll_struct}" # define syllable structure with regex
+        self.syll_inventory = list() # list to be populated later when make_sylls() is called
+>>>>>>> e401e23a640e647388b48f0576c952e2d9d4bed5
         # Read consonants csv into dataframe, label columns
         self.phonesVC = pd.read_csv(voiced_cons_csv_file)
         self.phonesVC.columns = [
@@ -138,7 +152,8 @@ class Phones:
         self.frontness = self._clean(self.phonesV.frontness.to_list())
         self.roundness = self._clean(self.phonesV.roundness.to_list())
 
-    # Function clears extra strings leftover by NaN values in the lists, also makes sure other naughty strings don't wind up in here on accident
+    # Function clears extra strings leftover by NaN values in the lists,
+    # also makes sure other naughty strings don't wind up in here on accident
     def _clean(self, data: iter) -> iter:
 
         NaN = re.compile(r"^NaN$")
@@ -176,17 +191,7 @@ class Phones:
             if re.match(self.syll_struct, syll):
                 sylls.append(syll)
 
-        return sorted(sample(sylls, size))
+        syll_inventory = sorted(sample(sylls,size))
+        self.syll_inventory = syll_inventory
 
-
-if __name__ == "__main__":
-
-    test_object = Phones(
-        "/home/patrick/dev/langGen/langGen/voiced_consonants.csv",
-        "/home/patrick/dev/langGen/langGen/voiceless_consonants.csv",
-        "/home/patrick/dev/langGen/langGen/vowels.csv",
-        syll_struct="[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?",
-    )
-    test_inventory = test_object.make_sylls(10)
-    print(test_inventory)
-    print(test_object.bilabial)
+        return syll_inventory

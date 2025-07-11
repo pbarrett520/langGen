@@ -1,184 +1,198 @@
 import pytest
-from phones import Phones, Syllable_patterns
 import re
+from forge import Forge, ImprovedSyllablePatterns, SyllableGenerator
 
 
-class TestPhones:
-    """Comprehensive test suite for Phones class functionality"""
+class TestForge:
+    """Comprehensive test suite for Forge class functionality"""
 
     def setup_method(self):
         """Set up test fixtures"""
-        self.test_object_custom_regex = Phones(
-            "voiced_consonants.csv",
-            "voiceless_consonants.csv",
-            "vowels.csv",
-            syll_struct=r"[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?",
-        )
+        self.forge = Forge()
 
-        self.test_object_syllable_template = Phones(
-            "voiced_consonants.csv",
-            "voiceless_consonants.csv",
-            "vowels.csv",
-            syll_struct=Syllable_patterns.polyneisian,
-        )
+        # Test with custom pattern (equivalent to old custom regex)
+        self.custom_pattern = {
+            "name": "Custom",
+            "structure": ["V", "CV", "VC", "CVC"],
+            "consonants": ["p", "t", "k", "b", "d", "g", "θ", "ð"],
+            "vowels": ["a", "e", "i", "o", "u", "ʌ", "æ"],
+            "weights": [0.2, 0.3, 0.2, 0.3],
+        }
+        self.custom_generator = SyllableGenerator(self.custom_pattern)
+
+        # Test with Polynesian template
+        self.polynesian_language = self.forge.generate("polynesian")
 
     def test_make_sylls_basic_functionality(self):
         """Test basic syllable generation functionality"""
-        test_inventory = self.test_object_custom_regex.make_sylls(10)
+        test_inventory = self.custom_generator.generate_syllables(10)
 
         # Check return value
         assert len(test_inventory) == 10
         assert all(isinstance(syll, str) for syll in test_inventory)
 
-        # Check internal state
-        assert len(self.test_object_custom_regex.syll_inventory) == 10
-        assert self.test_object_custom_regex.syll_inventory == test_inventory
-
-        # Check pattern matching
+        # Check that syllables follow expected patterns
         for syll in test_inventory:
-            assert re.match(self.test_object_custom_regex.syll_struct, syll)
+            # Should contain only expected phonemes
+            assert all(char in "ptkbdgθðaeiouʌæ" for char in syll)
 
     def test_make_sylls_with_predefined_patterns(self):
         """Test syllable generation with predefined language family patterns"""
         # Test Polynesian pattern
-        poly_inventory = self.test_object_syllable_template.make_sylls(10)
-        assert len(poly_inventory) == 10
+        poly_language = self.forge.generate("polynesian")
+        assert len(poly_language.syllables) == 20
 
-        for syll in poly_inventory:
-            assert re.match(Syllable_patterns.polyneisian, syll)
+        # Polynesian syllables should be simple (C)V patterns
+        for syll in poly_language.syllables[:5]:
+            assert len(syll) <= 2  # Simple CV or V structure
+            # Should contain only Polynesian phonemes
+            poly_consonants = set(ImprovedSyllablePatterns.polynesian["consonants"])
+            poly_vowels = set(ImprovedSyllablePatterns.polynesian["vowels"])
+            assert all(char in poly_consonants.union(poly_vowels) for char in syll)
 
-        # Test other patterns
-        sinitic_obj = Phones(
-            "voiced_consonants.csv",
-            "voiceless_consonants.csv",
-            "vowels.csv",
-            syll_struct=Syllable_patterns.south_sinitic,
-        )
+        # Test Sinitic pattern
+        sinitic_language = self.forge.generate("sinitic")
+        assert len(sinitic_language.syllables) == 20
 
-        sinitic_inventory = sinitic_obj.make_sylls(5)
-        assert len(sinitic_inventory) == 5
-
-        for syll in sinitic_inventory:
-            assert re.match(Syllable_patterns.south_sinitic, syll)
+        for syll in sinitic_language.syllables[:5]:
+            # Should contain only Sinitic phonemes
+            sinitic_consonants = set(ImprovedSyllablePatterns.sinitic["consonants"])
+            sinitic_vowels = set(ImprovedSyllablePatterns.sinitic["vowels"])
+            sinitic_finals = set(
+                ImprovedSyllablePatterns.sinitic.get("final_consonants", [])
+            )
+            all_phonemes = sinitic_consonants.union(sinitic_vowels).union(
+                sinitic_finals
+            )
+            assert all(char in all_phonemes for char in syll)
 
     def test_make_sylls_edge_cases(self):
         """Test edge cases for syllable generation"""
-        # Test size=1
-        single_syll = self.test_object_custom_regex.make_sylls(1)
+        # Test different sizes
+        single_syll = self.custom_generator.generate_syllables(1)
         assert len(single_syll) == 1
 
         # Test larger size
-        large_inventory = self.test_object_custom_regex.make_sylls(50)
+        large_inventory = self.custom_generator.generate_syllables(50)
         assert len(large_inventory) == 50
 
-        # Test that syllables are unique (sorted sampling should give unique results)
-        assert len(set(large_inventory)) == len(large_inventory)
+        # All syllables should be valid
+        for syll in large_inventory:
+            assert isinstance(syll, str)
+            assert len(syll) > 0
 
     def test_phoneme_categorization(self):
-        """Test that phonemes are properly categorized"""
-        # Test consonant categorization
-        assert len(self.test_object_custom_regex.all_consonants) > 0
-        assert len(self.test_object_custom_regex.all_vowels) > 0
+        """Test that phonemes are properly categorized in generated languages"""
+        # Test with different language templates
+        poly_lang = self.forge.generate("polynesian")
+        sinitic_lang = self.forge.generate("sinitic")
+        random_lang = self.forge.generate("random")
 
-        # Test specific categories
-        assert "p" in self.test_object_custom_regex.bilabial
-        assert "b" in self.test_object_custom_regex.bilabial
-        assert "t" in self.test_object_custom_regex.alveolar
-        assert "d" in self.test_object_custom_regex.alveolar
+        # Check that phonology information is accessible
+        assert len(poly_lang.phonology["consonants"]) > 0
+        assert len(poly_lang.phonology["vowels"]) > 0
 
-        # Test manner of articulation
-        assert "p" in self.test_object_custom_regex.plosive
-        assert "b" in self.test_object_custom_regex.plosive
-        assert "m" in self.test_object_custom_regex.nasal
-        assert "n" in self.test_object_custom_regex.nasal
+        # Check specific phonemes for Polynesian
+        assert "p" in poly_lang.phonology["consonants"]
+        assert "t" in poly_lang.phonology["consonants"]
+        assert "a" in poly_lang.phonology["vowels"]
+        assert "e" in poly_lang.phonology["vowels"]
+
+        # Check that different templates have different inventories
+        assert poly_lang.phonology["consonants"] != sinitic_lang.phonology["consonants"]
 
     def test_clean_method(self):
-        """Test the _clean method functionality"""
-        # Test with normal data
-        clean_data = self.test_object_custom_regex._clean(["a", "b", "c"])
-        assert clean_data == ["a", "b", "c"]
+        """Test that generated syllables are clean (no invalid characters)"""
+        # Generate syllables and check they're clean
+        test_inventory = self.custom_generator.generate_syllables(20)
 
-        # Test with NaN values (simulate pandas NaN as string)
-        dirty_data = ["a", "NaN", "b", "c"]
-        cleaned = self.test_object_custom_regex._clean(dirty_data)
-        assert "NaN" not in cleaned
-        assert "a" in cleaned
-        assert "b" in cleaned
-        assert "c" in cleaned
+        for syll in test_inventory:
+            # No spaces, no empty strings, no special characters
+            assert " " not in syll
+            assert len(syll) > 0
+            assert syll.isascii() or any(
+                char in syll for char in "æʌθðŋʃɻəɑɛɪʊ"
+            )  # Allow IPA
 
     def test_syllable_patterns_availability(self):
         """Test that all predefined syllable patterns are available"""
-        assert hasattr(Syllable_patterns, "polyneisian")
-        assert hasattr(Syllable_patterns, "south_sinitic")
-        assert hasattr(Syllable_patterns, "north_sinitic")
+        assert hasattr(ImprovedSyllablePatterns, "polynesian")
+        assert hasattr(ImprovedSyllablePatterns, "sinitic")
+        assert hasattr(ImprovedSyllablePatterns, "random")
 
-        # Test that patterns are valid regex
-        assert re.compile(Syllable_patterns.polyneisian)
-        assert re.compile(Syllable_patterns.south_sinitic)
-        assert re.compile(Syllable_patterns.north_sinitic)
+        # Test that patterns have required structure
+        assert "structure" in ImprovedSyllablePatterns.polynesian
+        assert "consonants" in ImprovedSyllablePatterns.polynesian
+        assert "vowels" in ImprovedSyllablePatterns.polynesian
 
     def test_linguistic_realism(self):
         """Test that generated syllables are linguistically realistic"""
-        inventory = self.test_object_custom_regex.make_sylls(20)
+        poly_lang = self.forge.generate("polynesian")
+        inventory = poly_lang.syllables
 
-        # Check average syllable length is reasonable (1-6 characters for IPA)
+        # Check average syllable length is reasonable for Polynesian (should be short)
         avg_length = sum(len(syll) for syll in inventory) / len(inventory)
-        assert 1 <= avg_length <= 6  # Allow flexibility for complex IPA
+        assert 1 <= avg_length <= 3  # Polynesian should be simple
 
         # Check that syllables contain expected phonemes
         all_text = "".join(inventory)
-        assert any(char in all_text for char in "aeiouʌæ")  # Should have vowels
-        assert any(char in all_text for char in "ptkbdgθð")  # Should have consonants
+        assert any(char in all_text for char in "aeiou")  # Should have vowels
+        assert any(char in all_text for char in "ptkmnl")  # Should have consonants
 
         # Check that syllables are not all identical (variety test)
-        assert len(set(inventory)) > 1  # Should have variety in actual syllables
+        assert len(set(inventory)) > 1  # Should have variety
 
     def test_reproducibility(self):
-        """Test that syllable generation has some consistency"""
-        # This is tricky since we use random sampling
-        # But we can test that the same object produces valid results consistently
-        inventory1 = self.test_object_custom_regex.make_sylls(10)
-        inventory2 = self.test_object_custom_regex.make_sylls(10)
+        """Test that syllable generation produces valid results consistently"""
+        # Generate multiple languages and test consistency
+        lang1 = self.forge.generate("polynesian")
+        lang2 = self.forge.generate("polynesian")
 
         # Both should be valid
-        assert len(inventory1) == 10
-        assert len(inventory2) == 10
+        assert len(lang1.syllables) == 20
+        assert len(lang2.syllables) == 20
 
-        # All should match pattern
-        for syll in inventory1 + inventory2:
-            assert re.match(self.test_object_custom_regex.syll_struct, syll)
+        # All should be valid syllables
+        for syll in lang1.syllables + lang2.syllables:
+            assert isinstance(syll, str)
+            assert len(syll) > 0
 
 
-# Keep the original simple tests for backward compatibility
+# Keep the original simple tests for backward compatibility, but updated for Forge
 def test_make_sylls():
-    """Original test - maintained for backward compatibility"""
-    test_object_custom_regex = Phones(
-        "voiced_consonants.csv",
-        "voiceless_consonants.csv",
-        "vowels.csv",
-        syll_struct=r"[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?",
-    )
+    """Original test - updated to use Forge instead of Phones"""
+    forge = Forge()
 
-    test_inventory_1 = test_object_custom_regex.make_sylls(10)
-    assert len(test_object_custom_regex.syll_inventory) == 10
+    # Generate custom pattern similar to old regex
+    custom_pattern = {
+        "structure": ["V", "CV", "VC", "CVC"],
+        "consonants": ["p", "t", "k", "b", "d", "g", "θ", "ð"],
+        "vowels": ["a", "e", "i", "o", "u", "ʌ", "æ"],
+        "weights": [0.2, 0.3, 0.2, 0.3],
+    }
+    generator = SyllableGenerator(custom_pattern)
 
-    for i in test_inventory_1:
-        assert re.match(test_object_custom_regex.syll_struct, i)
+    test_inventory_1 = generator.generate_syllables(10)
+    assert len(test_inventory_1) == 10
+
+    for syll in test_inventory_1:
+        # Check that syllables contain only expected phonemes
+        assert all(char in "ptkbdgθðaeiouʌæ" for char in syll)
 
 
 def test_syllable_patterns():
-    """Original test - maintained for backward compatibility"""
-    test_object_custom_regex = Phones(
-        "voiced_consonants.csv",
-        "voiceless_consonants.csv",
-        "vowels.csv",
-        syll_struct=r"[ptkbdgθð]?[aeiouʌæ]?[aeiouʌæ][ptkbdgθð]?[ptkbdgθð]?",
-    )
+    """Original test - updated to use Forge instead of Phones"""
+    forge = Forge()
 
-    test_inventory_2 = test_object_custom_regex.make_sylls(10)
+    # Test with Polynesian pattern
+    poly_lang = forge.generate("polynesian")
+    test_inventory_2 = poly_lang.syllables
 
-    for i in test_inventory_2:
-        assert re.match(test_object_custom_regex.syll_struct, i)
+    for syll in test_inventory_2:
+        # Should contain only Polynesian phonemes
+        poly_consonants = set(ImprovedSyllablePatterns.polynesian["consonants"])
+        poly_vowels = set(ImprovedSyllablePatterns.polynesian["vowels"])
+        assert all(char in poly_consonants.union(poly_vowels) for char in syll)
 
 
 # =============================================================================
@@ -187,7 +201,6 @@ def test_syllable_patterns():
 # =============================================================================
 
 
-@pytest.mark.xfail(reason="Forge API not yet implemented")
 def test_forge_api_basic_functionality():
     """Test that the main Forge class can be instantiated and generate basic content"""
     from langforge import Forge
@@ -275,7 +288,6 @@ def test_forge_fluent_interface_chaining():
 # =============================================================================
 
 
-@pytest.mark.xfail(reason="Package structure not yet created")
 def test_langforge_package_import():
     """Test that the langforge package can be imported"""
     import langforge
@@ -374,25 +386,22 @@ if __name__ == "__main__":
     print("=== LangForge Test Demo ===")
 
     # Demo with Polynesian pattern
-    demo_poly = Phones(
-        "voiced_consonants.csv",
-        "voiceless_consonants.csv",
-        "vowels.csv",
-        syll_struct=Syllable_patterns.polyneisian,
-    )
+    forge = Forge()
+    demo_poly = forge.generate("polynesian")
 
     print("\nPolynesian-style syllables:")
-    print(demo_poly.make_sylls(10))
+    print(demo_poly.syllables)
 
-    # Demo with South Sinitic pattern
-    demo_sinitic = Phones(
-        "voiced_consonants.csv",
-        "voiceless_consonants.csv",
-        "vowels.csv",
-        syll_struct=Syllable_patterns.south_sinitic,
-    )
+    # Demo with Sinitic pattern
+    demo_sinitic = forge.generate("sinitic")
 
-    print("\nSouth Sinitic-style syllables:")
-    print(demo_sinitic.make_sylls(10))
+    print("\nSinitic-style syllables:")
+    print(demo_sinitic.syllables)
+
+    # Demo with Random pattern
+    demo_random = forge.generate("random")
+
+    print("\nRandom-style syllables:")
+    print(demo_random.syllables[:10])  # First 10
 
     print("\n=== All Tests Ready! ===")

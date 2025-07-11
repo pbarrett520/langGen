@@ -12,24 +12,34 @@ LangForge aims to create linguistically coherent constructed languages that can 
 
 Inspired by [VulgarLang](https://www.vulgarlang.com/how-it-works/), but built with a library-first, test-driven architecture.
 
-## Current Status: Test-Driven Foundation
+## Current Status: Unified Forge API with Improved Syllable Generation
 
-### ✅ **Solid Foundation (10 Passing Tests)**
-- **Phoneme Management**: CSV-based IPA consonant/vowel organization
-- **Syllable Generation**: Regex-based patterns with language family templates
-- **Linguistic Realism**: Validated phonotactic constraints and variety
-- **Data Quality**: Robust cleaning and validation systems
-- **Language Templates**: Polynesian, Sinitic, and North Sinitic patterns
+### ✅ **Major Achievement: phones.py → forge.py Migration Complete!**
+- **Unified System**: All tests now use the improved Forge API (12 passing tests)
+- **Fixed Syllable Patterns**: Replaced broken regex with linguistically accurate generation
+- **Smart Algorithm**: Direct syllable construction instead of inefficient Cartesian product filtering
+- **Quality Improvement**: Realistic Polynesian (ka, ma, tu), Sinitic (kan, tuk, ŋoŋ), and Random patterns
+- **Test-Driven Migration**: All foundation tests successfully migrated to new system
 
-### 🔄 **Development Roadmap (8 Aspirational Tests)**
-**Short-term API Building Blocks:**
-- Package structure and imports
-- SwadeshList data structure
-- Template system integration
-- CSV/JSON export functionality  
-- Phonology system wrapper
+### 🚀 **Improved Syllable Generation Showcase**
+**Polynesian Output:** `['ma', 'ju', 'wa', 'pi', 'je', 'u', 'fi', 'e', 'wu', 'nu']`
+- ✅ Simple (C)V patterns - linguistically accurate!
+- ✅ No more diphthong artifacts from broken regex
 
-**Long-term Fluent Interface:**
+**Sinitic Output:** `['ŋa', 'mep', 'ɻa', 'ku', 'oŋ', 'tən', 'gaŋ', 'at', 'en', 'ek']`
+- ✅ Realistic CVC patterns with proper final consonants
+- ✅ Chinese-style phonemes (ŋ, ɻ, ə)
+
+### 🔄 **Development Roadmap (6 Remaining Aspirational Tests)**
+**Phase 1 Progress**: 2/5 short-term tests complete!
+- ✅ Package structure and imports  
+- ✅ **Forge API basic functionality**
+- ❌ SwadeshList data structure
+- ❌ Template system integration
+- ❌ CSV/JSON export functionality  
+- ❌ Phonology system wrapper
+
+**Phase 2 Goals:**
 - `Forge.swadesh("random")` - Generate Swadesh lists
 - `Forge.generate("polynesian")` - Full language generation
 - Method chaining with `.to_csv()` and `.to_json()`
@@ -38,28 +48,29 @@ Inspired by [VulgarLang](https://www.vulgarlang.com/how-it-works/), but built wi
 
 ### Current Working Functionality
 
-Generate syllables using language family templates:
+Generate linguistically accurate syllables using the improved Forge API:
 
 ```python
-from phones import Phones
-from syllable_patterns import Syllable_patterns
+import langforge
 
-# Create phonology system
-poly_lang = Phones(
-    'voiced_consonants.csv', 
-    'voiceless_consonants.csv', 
-    'vowels.csv',
-    syll_struct=Syllable_patterns.polyneisian  # Pre-defined template
-)
+# Create language generator
+forge = langforge.Forge()
 
-# Generate Polynesian-style syllables
-syllables = poly_lang.make_sylls(10)
-# Output: ['ka', 'lu', 'ma', 'na', 'pa', 'ta', 'wa', 'ko', 'mo', 'no']
+# Generate different language families with improved patterns
+poly_lang = forge.generate("polynesian")
+print(poly_lang.syllables)
+# Output: ['ma', 'ju', 'wa', 'pi', 'je', 'u', 'fi', 'e', 'wu', 'nu']
+# ✅ Simple (C)V patterns - no more diphthong artifacts!
 
-# Access phoneme categories
-print(poly_lang.bilabial)      # ['b', 'm', 'ʙ', 'β', 'p', 'ɸ']
-print(poly_lang.all_consonants) # All consonants
-print(poly_lang.all_vowels)     # All vowels
+sinitic_lang = forge.generate("sinitic") 
+print(sinitic_lang.syllables)
+# Output: ['ŋa', 'mep', 'ɻa', 'ku', 'oŋ', 'tən', 'gaŋ', 'at', 'en', 'ek']
+# ✅ Realistic CVC with proper final consonants
+
+# Access phonological information
+print(poly_lang.phonology['consonants'])  # Polynesian consonant inventory
+print(poly_lang.phonology['vowels'])      # Polynesian vowel inventory
+print(poly_lang.template)                 # "polynesian"
 ```
 
 ### Future API (Guided by Tests)
@@ -89,19 +100,23 @@ print(language.example_sentences)
 
 ### Run Tests
 ```bash
-# Run all tests (10 passing + 8 aspirational)
+# Run all tests (12 passing + 6 aspirational)
 python -m pytest tests.py -v
+
+# Run foundation tests (migrated to Forge API)
+python -m pytest tests.py::TestForge -v
 
 # Run only passing tests
 python -m pytest tests.py -v -k "not xfail"
 ```
 
-### Test-Driven Development
-Each feature is guided by **aspirational tests** that define the desired API before implementation:
+### Test-Driven Development Success Story
+Our migration showcases **aspirational test-driven development** in action:
 
-- **10 Passing Tests**: Validate current phonological system
-- **8 Aspirational Tests**: Define development roadmap
-- **Test Categories**: Unit, integration, linguistic realism, API design
+- **12 Passing Tests**: All foundation tests migrated to improved Forge API
+- **6 Aspirational Tests**: Define remaining development roadmap
+- **Test Categories**: Linguistic realism, API design, syllable quality validation
+- **Migration Achievement**: Successfully moved from legacy phones.py to forge.py
 
 ### Contributing
 
@@ -116,9 +131,10 @@ LangForge uses test-driven development. To contribute:
 
 ```
 langGen/langforge/
-├── phones.py              # Current phoneme management
-├── syllable_patterns.py   # Language family templates
-├── tests.py               # 18 comprehensive tests
+├── __init__.py            # Package exports (Forge class)
+├── forge.py               # ✅ NEW: Improved syllable generation API
+├── phones.py              # Legacy phoneme management (deprecated)
+├── tests.py               # 18 comprehensive tests (12 passing, 6 aspirational)
 ├── voiced_consonants.csv  # IPA consonant data
 ├── voiceless_consonants.csv
 ├── vowels.csv
@@ -127,8 +143,11 @@ langGen/langforge/
 
 ## Goals
 
-**Phase 1**: Make 5 short-term aspirational tests pass (basic API)
-**Phase 2**: Make 3 long-term aspirational tests pass (fluent interface)  
+**✅ Phase 1 Progress**: 2/5 short-term aspirational tests complete!
+- ✅ Package structure ✅ Forge API basic functionality
+- ❌ SwadeshList ❌ Template system ❌ CSV export
+
+**Phase 2**: Complete fluent interface with Swadesh generation  
 **Phase 3**: Expand to full morphology, syntax, and sentence generation
 
 Built with ❤️ for the constructed language community.

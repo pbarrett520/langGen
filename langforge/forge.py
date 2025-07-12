@@ -8,7 +8,7 @@ import random
 from typing import List, Dict, Any
 
 
-class ImprovedSyllablePatterns:
+class SyllablePatterns:
     """
     Linguistically accurate syllable patterns for different language families.
 
@@ -52,10 +52,58 @@ class ImprovedSyllablePatterns:
         "weights": [0.1, 0.4, 0.2, 0.3],
     }
 
-    # Random: More variety for testing
-    random = {
-        "name": "Random",
-        "structure": ["V", "CV", "VC", "CVC", "CCV", "CCVC"],
+    # Germanic: Complex consonant clusters, diverse vowels
+    germanic = {
+        "name": "Germanic",
+        "structure": ["V", "CV", "VC", "CVC", "CCV", "CCVC", "CVCC", "CCVCC"],
+        "consonants": [
+            "p",
+            "t",
+            "k",
+            "b",
+            "d",
+            "g",
+            "f",
+            "θ",
+            "s",
+            "ʃ",
+            "h",
+            "m",
+            "n",
+            "ŋ",
+            "l",
+            "r",
+            "w",
+            "j",
+        ],
+        "vowels": ["i", "ɪ", "e", "ɛ", "æ", "ʌ", "ə", "ɑ", "ɔ", "o", "ʊ", "u"],
+        "cluster_initials": [
+            "bl",
+            "br",
+            "fl",
+            "fr",
+            "gl",
+            "gr",
+            "kl",
+            "kr",
+            "pl",
+            "pr",
+            "sl",
+            "sp",
+            "st",
+            "sk",
+            "tr",
+            "tw",
+            "sw",
+        ],
+        "cluster_finals": ["st", "nt", "nd", "mp", "nk", "lt", "rt", "ft"],
+        "weights": [0.05, 0.25, 0.15, 0.35, 0.10, 0.07, 0.02, 0.01],
+    }
+
+    # Romance: Open syllables, specific clusters
+    romance = {
+        "name": "Romance",
+        "structure": ["V", "CV", "CVC", "CCV"],
         "consonants": [
             "p",
             "t",
@@ -65,20 +113,198 @@ class ImprovedSyllablePatterns:
             "g",
             "f",
             "s",
-            "ʃ",
             "m",
             "n",
-            "ŋ",
+            "ɲ",
             "l",
-            "ɻ",
-            "j",
-            "w",
-            "θ",
-            "ð",
+            "ʎ",
+            "r",
+            "ɾ",
         ],
-        "vowels": ["a", "e", "i", "o", "u", "ə", "ɑ", "ɛ", "ɪ", "ʊ"],
-        "weights": [0.1, 0.3, 0.2, 0.25, 0.1, 0.05],
+        "vowels": ["a", "e", "i", "o", "u"],
+        "cluster_initials": [
+            "bl",
+            "br",
+            "fl",
+            "fr",
+            "gl",
+            "gr",
+            "kl",
+            "kr",
+            "pl",
+            "pr",
+            "tr",
+            "dr",
+        ],
+        "final_consonants": ["n", "r", "l", "s"],
+        "weights": [0.15, 0.60, 0.15, 0.10],
     }
+
+    # Japanese: Very simple CV structure
+    japanese = {
+        "name": "Japanese",
+        "structure": ["V", "CV", "CVC"],
+        "consonants": [
+            "k",
+            "g",
+            "s",
+            "z",
+            "t",
+            "d",
+            "n",
+            "h",
+            "b",
+            "p",
+            "m",
+            "j",
+            "r",
+            "w",
+        ],
+        "vowels": ["a", "i", "u", "e", "o"],
+        "final_consonants": ["n"],  # Only /n/ can be final
+        "weights": [0.10, 0.85, 0.05],
+    }
+
+    @staticmethod
+    def generate_random_pattern():
+        """Generate a completely random syllable pattern each time it's called."""
+
+        # Pool of all possible phonemes
+        ALL_CONSONANTS = [
+            "p",
+            "t",
+            "k",
+            "q",
+            "b",
+            "d",
+            "g",
+            "ɢ",
+            "f",
+            "θ",
+            "s",
+            "ʃ",
+            "x",
+            "χ",
+            "h",
+            "ħ",
+            "ʔ",
+            "v",
+            "ð",
+            "z",
+            "ʒ",
+            "ɣ",
+            "ʁ",
+            "ʕ",
+            "m",
+            "n",
+            "ɲ",
+            "ŋ",
+            "ɴ",
+            "l",
+            "ʎ",
+            "ʟ",
+            "r",
+            "ɾ",
+            "ʀ",
+            "w",
+            "j",
+            "ɥ",
+            "ʍ",
+            "tʃ",
+            "dʒ",
+            "ts",
+            "dz",
+            "ʈ",
+            "ɖ",
+            "ɳ",
+            "ɭ",
+            "ɻ",
+            "c",
+            "ɟ",
+            "ç",
+            "ʝ",
+        ]
+
+        ALL_VOWELS = [
+            "a",
+            "e",
+            "i",
+            "o",
+            "u",
+            "ɑ",
+            "ɛ",
+            "ɪ",
+            "ɔ",
+            "ʊ",
+            "ə",
+            "ɨ",
+            "ʉ",
+            "ɯ",
+            "y",
+            "ø",
+            "œ",
+            "æ",
+            "ɐ",
+            "ɒ",
+            "ʌ",
+            "ɤ",
+            "ɵ",
+            "ɶ",
+            "ɘ",
+            "ɜ",
+            "ɞ",
+            "ɚ",
+            "ɝ",
+        ]
+
+        # Randomly select consonants (5-25)
+        consonant_count = random.randint(5, 25)
+        consonants = random.sample(ALL_CONSONANTS, consonant_count)
+
+        # Randomly select vowels (3-15)
+        vowel_count = random.randint(3, 15)
+        vowels = random.sample(ALL_VOWELS, vowel_count)
+
+        # Randomly choose syllable structures
+        possible_structures = [
+            "V",
+            "CV",
+            "VC",
+            "CVC",
+            "CCV",
+            "VCC",
+            "CCVC",
+            "CVCC",
+            "CCVCC",
+        ]
+        structure_count = random.randint(2, 8)
+        structures = random.sample(possible_structures, structure_count)
+
+        # Generate random weights
+        weights = [random.random() for _ in structures]
+        total_weight = sum(weights)
+        weights = [w / total_weight for w in weights]
+
+        # Randomly decide final consonant restrictions
+        has_final_restrictions = random.choice([True, False])
+        pattern = {
+            "name": "Random",
+            "structure": structures,
+            "consonants": consonants,
+            "vowels": vowels,
+            "weights": weights,
+        }
+
+        if has_final_restrictions:
+            final_count = random.randint(1, min(5, len(consonants)))
+            pattern["final_consonants"] = random.sample(consonants, final_count)
+
+        return pattern
+
+    @staticmethod
+    def random():
+        """Generate a truly random pattern each time."""
+        return SyllablePatterns.generate_random_pattern()
 
 
 class SyllableGenerator:
@@ -138,11 +364,17 @@ class GeneratedLanguage:
         """Generate the phonological system."""
         # Map template names to patterns
         if template == "polynesian":
-            pattern = ImprovedSyllablePatterns.polynesian
+            pattern = SyllablePatterns.polynesian
         elif template in ["sinitic", "sino-tibetan"]:
-            pattern = ImprovedSyllablePatterns.sinitic
+            pattern = SyllablePatterns.sinitic
+        elif template == "germanic":
+            pattern = SyllablePatterns.germanic
+        elif template == "romance":
+            pattern = SyllablePatterns.romance
+        elif template == "japanese":
+            pattern = SyllablePatterns.japanese
         else:
-            pattern = ImprovedSyllablePatterns.random
+            pattern = SyllablePatterns.random()  # Call method for truly random
 
         self.phonology = {
             "template": template,

@@ -1,6 +1,6 @@
 import pytest
 import re
-from forge import Forge, ImprovedSyllablePatterns, SyllableGenerator
+from forge import Forge, SyllablePatterns, SyllableGenerator
 
 
 class TestForge:
@@ -46,8 +46,8 @@ class TestForge:
         for syll in poly_language.syllables[:5]:
             assert len(syll) <= 2  # Simple CV or V structure
             # Should contain only Polynesian phonemes
-            poly_consonants = set(ImprovedSyllablePatterns.polynesian["consonants"])
-            poly_vowels = set(ImprovedSyllablePatterns.polynesian["vowels"])
+            poly_consonants = set(SyllablePatterns.polynesian["consonants"])
+            poly_vowels = set(SyllablePatterns.polynesian["vowels"])
             assert all(char in poly_consonants.union(poly_vowels) for char in syll)
 
         # Test Sinitic pattern
@@ -56,11 +56,9 @@ class TestForge:
 
         for syll in sinitic_language.syllables[:5]:
             # Should contain only Sinitic phonemes
-            sinitic_consonants = set(ImprovedSyllablePatterns.sinitic["consonants"])
-            sinitic_vowels = set(ImprovedSyllablePatterns.sinitic["vowels"])
-            sinitic_finals = set(
-                ImprovedSyllablePatterns.sinitic.get("final_consonants", [])
-            )
+            sinitic_consonants = set(SyllablePatterns.sinitic["consonants"])
+            sinitic_vowels = set(SyllablePatterns.sinitic["vowels"])
+            sinitic_finals = set(SyllablePatterns.sinitic.get("final_consonants", []))
             all_phonemes = sinitic_consonants.union(sinitic_vowels).union(
                 sinitic_finals
             )
@@ -116,14 +114,18 @@ class TestForge:
 
     def test_syllable_patterns_availability(self):
         """Test that all predefined syllable patterns are available"""
-        assert hasattr(ImprovedSyllablePatterns, "polynesian")
-        assert hasattr(ImprovedSyllablePatterns, "sinitic")
-        assert hasattr(ImprovedSyllablePatterns, "random")
+        assert hasattr(SyllablePatterns, "polynesian")
+        assert hasattr(SyllablePatterns, "sinitic")
+        assert hasattr(SyllablePatterns, "random")
+        # Test new patterns
+        assert hasattr(SyllablePatterns, "germanic")
+        assert hasattr(SyllablePatterns, "romance")
+        assert hasattr(SyllablePatterns, "japanese")
 
         # Test that patterns have required structure
-        assert "structure" in ImprovedSyllablePatterns.polynesian
-        assert "consonants" in ImprovedSyllablePatterns.polynesian
-        assert "vowels" in ImprovedSyllablePatterns.polynesian
+        assert "structure" in SyllablePatterns.polynesian
+        assert "consonants" in SyllablePatterns.polynesian
+        assert "vowels" in SyllablePatterns.polynesian
 
     def test_linguistic_realism(self):
         """Test that generated syllables are linguistically realistic"""
@@ -156,6 +158,86 @@ class TestForge:
         for syll in lang1.syllables + lang2.syllables:
             assert isinstance(syll, str)
             assert len(syll) > 0
+
+    def test_new_language_patterns(self):
+        """Test new language family patterns work correctly"""
+        forge = Forge()
+
+        # Test Germanic - should have complex clusters
+        germanic_lang = forge.generate("germanic")
+        assert len(germanic_lang.syllables) == 20
+
+        # Germanic should have some complex syllables
+        complex_sylls = [s for s in germanic_lang.syllables if len(s) > 2]
+        assert len(complex_sylls) > 0, "Germanic should have some complex syllables"
+
+        # Test Romance - should be more open
+        romance_lang = forge.generate("romance")
+        avg_length = sum(len(s) for s in romance_lang.syllables) / len(
+            romance_lang.syllables
+        )
+        assert avg_length < 3.5, "Romance should have relatively simple syllables"
+
+        # Test Japanese - should be very simple
+        japanese_lang = forge.generate("japanese")
+        for syll in japanese_lang.syllables:
+            assert len(syll) <= 3, "Japanese syllables should be simple"
+            # Should end in vowel or 'n' only
+            assert (
+                syll[-1] in "aeioun"
+            ), f"Japanese syllable '{syll}' should end in vowel or 'n'"
+
+    def test_truly_random_pattern(self):
+        """Test that random patterns are actually different each time"""
+        forge = Forge()
+
+        # Generate multiple random languages
+        random_lang1 = forge.generate("random")
+        random_lang2 = forge.generate("random")
+
+        # Phoneme inventories should be different (high probability)
+        inventory1 = set(
+            random_lang1.phonology["consonants"] + random_lang1.phonology["vowels"]
+        )
+        inventory2 = set(
+            random_lang2.phonology["consonants"] + random_lang2.phonology["vowels"]
+        )
+
+        # Should have different phonemes (very high probability with large phoneme pool)
+        assert (
+            inventory1 != inventory2
+        ), "Random patterns should have different phoneme inventories"
+
+        # Should have different syllable structures (high probability)
+        structures1 = set(random_lang1.phonology["pattern"]["structure"])
+        structures2 = set(random_lang2.phonology["pattern"]["structure"])
+
+        # At least one should be different
+        assert (
+            structures1 != structures2
+        ), "Random patterns should have different syllable structures"
+
+    def test_pattern_linguistic_characteristics(self):
+        """Test that each pattern has expected linguistic characteristics"""
+        forge = Forge()
+
+        # Polynesian: Very open, simple
+        poly = forge.generate("polynesian")
+        avg_poly_length = sum(len(s) for s in poly.syllables) / len(poly.syllables)
+        assert avg_poly_length <= 2.5, "Polynesian should have very short syllables"
+
+        # Germanic: More complex, allows clusters
+        germanic = forge.generate("germanic")
+        max_germanic_length = max(len(s) for s in germanic.syllables)
+        assert max_germanic_length >= 3, "Germanic should have some long syllables"
+
+        # Japanese: Only 'n' finals allowed
+        japanese = forge.generate("japanese")
+        for syll in japanese.syllables:
+            if len(syll) > 1 and syll[-1] not in "aeiou":
+                assert (
+                    syll[-1] == "n"
+                ), f"Japanese syllable '{syll}' can only end in 'n' as consonant"
 
 
 # Keep the original simple tests for backward compatibility, but updated for Forge
@@ -190,8 +272,8 @@ def test_syllable_patterns():
 
     for syll in test_inventory_2:
         # Should contain only Polynesian phonemes
-        poly_consonants = set(ImprovedSyllablePatterns.polynesian["consonants"])
-        poly_vowels = set(ImprovedSyllablePatterns.polynesian["vowels"])
+        poly_consonants = set(SyllablePatterns.polynesian["consonants"])
+        poly_vowels = set(SyllablePatterns.polynesian["vowels"])
         assert all(char in poly_consonants.union(poly_vowels) for char in syll)
 
 

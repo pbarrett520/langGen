@@ -55,15 +55,36 @@ def print_language_demo(forge, template_name, description):
         formatted_row = "  ".join(f"{syll:>6}" for syll in row)
         print(f"    {formatted_row}")
 
+    # Generate and show morphemes
+    print(f"\nGenerated Morphemes:")
+    roots = forge.morphemes(template_name, type="roots", count=8)
+    affixes = forge.morphemes(template_name, type="affixes", count=4)
+
+    print(f"  Roots (concept bases):")
+    for i in range(0, len(roots), 4):
+        row = roots[i : i + 4]
+        formatted_row = "  ".join(f"{root:>8}" for root in row)
+        print(f"    {formatted_row}")
+
+    print(f"  Affixes (modifiers):")
+    formatted_affixes = "  ".join(f"{affix:>6}" for affix in affixes)
+    print(f"    {formatted_affixes}")
+
     # Basic linguistic analysis
     avg_length = sum(len(s) for s in lang.syllables) / len(lang.syllables)
     max_length = max(len(s) for s in lang.syllables)
     unique_count = len(set(lang.syllables))
 
+    # Morpheme analysis
+    avg_root_length = sum(len(r) for r in roots) / len(roots)
+    avg_affix_length = sum(len(a) for a in affixes) / len(affixes)
+
     print(f"\nLinguistic Analysis:")
     print(f"  • Average syllable length: {avg_length:.1f} phonemes")
     print(f"  • Maximum syllable length: {max_length} phonemes")
     print(f"  • Unique syllables: {unique_count}/{len(lang.syllables)}")
+    print(f"  • Average root length: {avg_root_length:.1f} phonemes")
+    print(f"  • Average affix length: {avg_affix_length:.1f} phonemes")
 
     return lang
 
@@ -86,6 +107,43 @@ def demo_random_comparison(forge):
         print(f"  • Vowels: {' '.join(vowels)} ...")
         print(f"  • Patterns: {' | '.join(structures)}")
         print(f"  • Sample: {' '.join(lang.syllables[:6])}")
+
+
+def demo_morpheme_progression(forge):
+    """Demonstrate how morphemes build on syllables for language building."""
+    print_subheader("MORPHEME PROGRESSION - Building Words from Syllables")
+    print("Demonstrating the progression: Syllables → Morphemes → Future Words")
+
+    # Pick a language to show progression
+    template = "polynesian"
+    lang = forge.generate(template)
+
+    print(f"\n🔗 Using {template.title()} as example:")
+    print(f"Step 1: Generate syllables from phoneme inventory")
+    print(
+        f"  Phonemes: {' '.join(lang.phonology['consonants'][:8])} | {' '.join(lang.phonology['vowels'])}"
+    )
+    print(f"  Syllables: {' '.join(lang.syllables[:8])}")
+
+    print(f"\nStep 2: Combine syllables into morphemes")
+    roots = forge.morphemes(template, type="roots", count=6)
+    affixes = forge.morphemes(template, type="affixes", count=4)
+    print(f"  Roots: {' '.join(roots)}")
+    print(f"  Affixes: {' '.join(affixes)}")
+
+    print(f"\nStep 3: Language-specific morpheme patterns")
+    templates = ["japanese", "germanic", "sinitic"]
+    for t in templates:
+        sample_roots = forge.morphemes(t, type="roots", count=3)
+        sample_affixes = forge.morphemes(t, type="affixes", count=2)
+        print(
+            f"  {t.title():>10}: roots={' '.join(sample_roots)}, affixes={' '.join(sample_affixes)}"
+        )
+
+    print(f"\n🎯 Next Phase: Word Building")
+    print(f"  Future: root + affix → complete words")
+    print(f"  Example: '{roots[0]}' + '{affixes[0]}' → '{roots[0]}{affixes[0]}'")
+    print(f"  Goal: 207-concept Swadesh list generation")
 
 
 def main():
@@ -121,6 +179,9 @@ def main():
     # Demo truly random generation
     demo_random_comparison(forge)
 
+    # Demo morpheme generation capabilities
+    demo_morpheme_progression(forge)
+
     # Comparative analysis
     print_subheader("COMPARATIVE ANALYSIS")
     print("Comparing average syllable complexity across language families:")
@@ -141,6 +202,9 @@ def main():
     print("✓ Position-sensitive consonant placement")
     print("✓ Language family-specific phonotactic constraints")
     print("✓ Truly random pattern generation with 50+ phonemes")
+    print("✓ Morpheme generation building on syllable patterns")
+    print("✓ Root and affix generation with realistic lengths")
+    print("✓ Language-specific morpheme complexity patterns")
     print("✓ Test-driven development with comprehensive coverage")
 
     print_header("🎯 Demo Complete!")
@@ -149,8 +213,14 @@ def main():
     print("  • Linguistic research and experimentation")
     print("  • Game development and fantasy settings")
     print("  • Educational demonstrations of phonological systems")
+    print("  • Morpheme analysis and word formation studies")
 
-    print(f"\nThanks for exploring LangForge! 🚀")
+    print(f"\n🚀 Current Capabilities:")
+    print(f"  ✅ Syllable generation across 5 language families")
+    print(f"  ✅ Morpheme generation (roots & affixes)")
+    print(f"  🔄 Coming Next: Word building & Swadesh lists")
+
+    print(f"\nThanks for exploring LangForge! 🌍")
 
 
 if __name__ == "__main__":

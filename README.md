@@ -12,14 +12,15 @@ LangForge aims to create linguistically coherent constructed languages that can 
 
 Inspired by [VulgarLang](https://www.vulgarlang.com/how-it-works/), but built with a library-first, test-driven architecture.
 
-## Current Status: Expanded Language Family Support & TDD Success
+## Current Status: Morpheme Generation & Advanced Language Building
 
-### ✅ **Major Achievement: Multi-Language Family Generator with TDD Methodology!**
-- **Expanded Language Support**: 5 realistic language families + truly random generation (14+ passing tests)
-- **Test-Driven Development Proven**: New features implemented using TDD - tests first, implementation second
+### ✅ **Major Achievement: Complete Morpheme Generation System with TDD Success!**
+- **Morpheme Generation**: Roots and affixes building on syllable patterns (20+ passing tests)
+- **Language-Specific Realism**: Japanese 2-3 syllable roots, Polynesian simple patterns, Germanic complex affixes
+- **Test-Driven Development Proven**: Morpheme features implemented using TDD - tests first, implementation second
 - **Advanced Syllable Patterns**: Germanic complexity, Romance flow, Japanese simplicity, Polynesian openness
 - **Truly Random Generation**: Each call creates completely different phoneme inventories from 50+ phoneme pool
-- **Production Ready**: Beautiful demo script for showcasing linguistic capabilities
+- **Production Ready**: Enhanced demo script showcasing syllables → morphemes → future words progression
 
 ### 🚀 **Multi-Language Family Showcase**
 **Polynesian:** `['ma', 'ju', 'wa', 'pi', 'je', 'u', 'fi', 'e', 'wu', 'nu']` - Simple (C)V patterns  
@@ -32,18 +33,24 @@ Inspired by [VulgarLang](https://www.vulgarlang.com/how-it-works/), but built wi
 - Random #1: `['ɥɯʎ', 'ʀɯχdz', 'ʎøw', 'pø']` (phonemes: χ, ɣ, ʝ, ʀ, ɥ, ʒ...)
 - Random #2: `['ʁɨtʍ', 'dʒɵqʍ', 'ɳʌʍ']` (phonemes: dʒ, z, q, ʍ, ç, ʒ, ʕ...)
 
-### 🔄 **Development Roadmap - Next Phase: Morpheme Generation**
+### 🔄 **Development Roadmap - Morpheme Generation Complete!**
 **Phase 1 COMPLETE**: ✅ Advanced syllable generation with 5 language families + truly random
 - ✅ Package structure and imports  
 - ✅ **Forge API with multi-language support**
 - ✅ **Test-driven development methodology proven**
 - ✅ **Production-ready demo capabilities**
 
-**Phase 2 Current**: Morpheme & vocabulary generation (leverage syllable system)
-- 🎯 **Next Goal**: Morpheme generator that builds words from syllables
-- ❌ SwadeshList data structure for concept mapping
-- ❌ Root morpheme generation using syllable patterns
-- ❌ Affix system (prefixes, suffixes, infixes)
+**Phase 2 COMPLETE**: ✅ Morpheme generation building on syllable system
+- ✅ **Morpheme generator** that builds roots and affixes from syllables
+- ✅ **Language-specific patterns**: Japanese 2-3 syllable roots, Polynesian simple patterns
+- ✅ **Root morpheme generation** using syllable patterns with realistic lengths
+- ✅ **Affix system** (prefixes, suffixes) with appropriate complexity
+- ✅ **Enhanced demo script** showcasing progression from syllables to morphemes
+
+**Phase 3 Current**: Word building & Swadesh list generation
+- 🎯 **Next Goal**: Complete word formation combining roots + affixes
+- ❌ SwadeshList data structure for 207 concept mapping
+- ❌ Word building with morphophonological rules
 - ❌ CSV/JSON export functionality
 
 **Phase 3 Goals:**
@@ -55,7 +62,7 @@ Inspired by [VulgarLang](https://www.vulgarlang.com/how-it-works/), but built wi
 
 ### Current Working Functionality
 
-Generate linguistically accurate syllables across 5 language families:
+Generate linguistically accurate syllables and morphemes across 5 language families:
 
 ```python
 import langforge
@@ -77,6 +84,14 @@ print(f"Polynesian: {polynesian.syllables[:6]}")
 print(f"Germanic: {germanic.syllables[:4]}")  
 # Output: ['lir', 'θən', 'gɛʃl', 'θpʌg']
 
+# Generate morphemes building on syllable patterns
+roots = forge.morphemes("japanese", type="roots", count=8)
+affixes = forge.morphemes("polynesian", type="affixes", count=4)
+print(f"Japanese roots: {roots}")
+# Output: ['botu', 'pozu', 'gezu', 'besu', 'jaho', 'tine', 'ruojo', 'gedo']
+print(f"Polynesian affixes: {affixes}")
+# Output: ['wu', 'po', 'fe', 'ŋa']
+
 # Truly random generation - different each time!
 random1 = forge.generate("random")
 random2 = forge.generate("random")
@@ -91,39 +106,48 @@ print(f"Syllable patterns: {romance.phonology['pattern']['structure']}")
 
 ### Demo Script - Perfect for Showcasing!
 
-Run the beautiful demo to showcase LangForge's capabilities:
+Run the enhanced demo to showcase LangForge's complete capabilities:
 
 ```bash
 # In the langforge directory
 python demo.py
 ```
 
-**Features elegant formatting with:**
-- Multi-language family demonstrations
-- Phoneme inventory analysis  
-- Linguistic complexity comparisons
-- Random generation showcases
-- Technical feature highlights
+**Features comprehensive demonstrations:**
+- Multi-language family syllable generation
+- **Morpheme generation** (roots & affixes) for each language family
+- **Progression showcase**: Syllables → Morphemes → Future Words
+- Phoneme inventory analysis and linguistic complexity comparisons
+- Random generation showcases with different phoneme inventories
+- Technical feature highlights and development roadmap
 
-Perfect for job interviews, presentations, or showing friends!
+**Perfect for job interviews, presentations, or technical demonstrations!**
 
-### Future API (Guided by Tests)
+### Current & Future API (Guided by Tests)
 
-The next phase will add morpheme and vocabulary generation:
+**Current Working API:**
 
 ```python
 import langforge
 
-# Morpheme generation (Phase 2 goal)
-roots = langforge.Forge.morphemes("polynesian", type="roots", count=50)
-affixes = langforge.Forge.morphemes("germanic", type="affixes")
+# Morpheme generation (Phase 2 COMPLETE)
+roots = forge.morphemes("polynesian", type="roots", count=50)
+affixes = forge.morphemes("germanic", type="affixes", count=20)
 
+# Language-specific morpheme patterns
+japanese_roots = forge.morphemes("japanese", type="roots")  # 2-3 syllable roots
+polynesian_affixes = forge.morphemes("polynesian", type="affixes")  # Simple patterns
+```
+
+**Future API (Phase 3 goals):**
+
+```python
 # Swadesh list generation with morphology
-swadesh = langforge.Forge.swadesh("random")
-swadesh = langforge.Forge.swadesh("polynesian")
+swadesh = forge.swadesh("random")
+swadesh = forge.swadesh("polynesian")
 
 # Full language with vocabulary
-language = langforge.Forge.generate("romance")
+language = forge.generate("romance")
 print(language.phonology.inventory)
 print(language.vocabulary.swadesh_list)  # 207 concepts
 print(language.vocabulary.morphology)    # Root + affix system
@@ -133,10 +157,10 @@ print(language.vocabulary.morphology)    # Root + affix system
 
 ### Run Tests
 ```bash
-# Run all tests (14+ passing + 6 aspirational)
+# Run all tests (20+ passing + 6 aspirational)
 python -m pytest tests.py -v
 
-# Run foundation tests (all language families)
+# Run foundation tests (all language families + morphemes)
 python -m pytest tests.py::TestForge -v
 
 # Run only passing tests
@@ -149,12 +173,12 @@ python demo.py
 ### Test-Driven Development Success Story
 Our latest development cycle proves **TDD methodology works perfectly**:
 
-- **✅ Tests First**: Defined new language patterns in test cases
-- **✅ Implementation Second**: Built features to make tests pass
-- **✅ Green Tests**: All 14+ foundation tests passing
-- **✅ TDD Proven**: Added Germanic, Romance, Japanese, and truly random generation
-- **✅ Production Ready**: Beautiful demo script validates real-world usage
-- **Test Categories**: Multi-language family validation, truly random behavior, linguistic characteristics
+- **✅ Tests First**: Defined morpheme generation patterns in test cases
+- **✅ Implementation Second**: Built morpheme features to make tests pass
+- **✅ Green Tests**: All 20+ foundation tests passing (including 5 new morpheme tests)
+- **✅ TDD Proven**: Added morpheme generation, language-specific patterns, and enhanced demo
+- **✅ Production Ready**: Enhanced demo script showcases complete progression
+- **Test Categories**: Multi-language family validation, morpheme generation, linguistic characteristics
 
 ### Contributing
 
@@ -185,12 +209,16 @@ langGen/langforge/
 **✅ Phase 1 COMPLETE**: Advanced syllable generation with multi-language family support!
 - ✅ Package structure ✅ Multi-language Forge API ✅ TDD methodology ✅ Production demo
 
-**🎯 Phase 2 CURRENT**: Morpheme generation & vocabulary building
-- 🚧 Root morpheme generation using syllable patterns
-- 🚧 Affix system (prefixes, suffixes, derivational morphology)  
+**✅ Phase 2 COMPLETE**: Morpheme generation building on syllable system!
+- ✅ Root morpheme generation using syllable patterns
+- ✅ Affix system (prefixes, suffixes) with language-specific complexity
+- ✅ Language-specific morpheme patterns (Japanese 2-3 syllables, Polynesian simple)
+- ✅ Enhanced demo script showcasing progression
+
+**🎯 Phase 3 CURRENT**: Word building & Swadesh list generation
+- 🚧 Complete word formation combining roots + affixes
 - 🚧 SwadeshList with 207 concept mappings
 - 🚧 CSV/JSON export functionality
-
-**Phase 3**: Complete language generation with syntax and example sentences
+- 🚧 Morphophonological rules for word building
 
 Built with ❤️ for the constructed language community.

@@ -239,6 +239,101 @@ class TestForge:
                     syll[-1] == "n"
                 ), f"Japanese syllable '{syll}' can only end in 'n' as consonant"
 
+    def test_morpheme_generation_basic_functionality(self):
+        """Test basic morpheme generation functionality"""
+        forge = Forge()
+
+        # Should be able to generate morphemes
+        roots = forge.morphemes("polynesian", type="roots", count=10)
+        affixes = forge.morphemes("polynesian", type="affixes", count=5)
+
+        # Check return values
+        assert len(roots) == 10
+        assert len(affixes) == 5
+        assert all(isinstance(morpheme, str) for morpheme in roots)
+        assert all(isinstance(morpheme, str) for morpheme in affixes)
+
+    def test_morpheme_language_specific_patterns(self):
+        """Test that morphemes follow language-specific patterns"""
+        forge = Forge()
+
+        # Japanese morphemes should tend toward 2-3 syllables
+        japanese_roots = forge.morphemes("japanese", type="roots", count=20)
+        japanese_lengths = [len(root) for root in japanese_roots]
+        avg_japanese_length = sum(japanese_lengths) / len(japanese_lengths)
+        assert (
+            avg_japanese_length > 2.5
+        ), "Japanese morphemes should be longer on average"
+
+        # Polynesian morphemes should be simpler
+        poly_roots = forge.morphemes("polynesian", type="roots", count=20)
+        poly_lengths = [len(root) for root in poly_roots]
+        avg_poly_length = sum(poly_lengths) / len(poly_lengths)
+        assert (
+            avg_poly_length < avg_japanese_length
+        ), "Polynesian should be simpler than Japanese"
+
+    def test_morpheme_types_distinction(self):
+        """Test that roots and affixes have different characteristics"""
+        forge = Forge()
+
+        roots = forge.morphemes("germanic", type="roots", count=15)
+        affixes = forge.morphemes("germanic", type="affixes", count=15)
+
+        # Roots should generally be longer than affixes
+        avg_root_length = sum(len(root) for root in roots) / len(roots)
+        avg_affix_length = sum(len(affix) for affix in affixes) / len(affixes)
+
+        assert (
+            avg_root_length >= avg_affix_length
+        ), "Roots should be at least as long as affixes"
+
+        # Most affixes should be short (1-2 syllables worth)
+        short_affixes = [affix for affix in affixes if len(affix) <= 3]
+        assert len(short_affixes) > len(affixes) * 0.7, "Most affixes should be short"
+
+    def test_morpheme_linguistic_realism(self):
+        """Test that morphemes are linguistically realistic"""
+        forge = Forge()
+
+        # Generate morphemes for different languages
+        for template in ["polynesian", "japanese", "germanic", "romance"]:
+            morphemes = forge.morphemes(template, type="roots", count=10)
+
+            # Should have variety (not all identical)
+            assert len(set(morphemes)) > 1, f"{template} morphemes should have variety"
+
+            # Should use appropriate phonemes for language family
+            language = forge.generate(template)
+            valid_phonemes = set(
+                language.phonology["consonants"] + language.phonology["vowels"]
+            )
+
+            for morpheme in morphemes:
+                assert all(
+                    char in valid_phonemes for char in morpheme
+                ), f"{template} morpheme '{morpheme}' uses invalid phonemes"
+
+    def test_morpheme_builds_on_syllables(self):
+        """Test that morphemes properly use existing syllable generation"""
+        forge = Forge()
+
+        # Generate morphemes for a non-random language (consistent phoneme inventory)
+        morphemes = forge.morphemes("polynesian", type="roots", count=5)
+
+        # Get expected Polynesian phonemes
+        expected_consonants = set(
+            ["p", "t", "k", "f", "s", "h", "m", "n", "ŋ", "l", "w", "j"]
+        )
+        expected_vowels = set(["a", "e", "i", "o", "u"])
+        expected_phonemes = expected_consonants.union(expected_vowels)
+
+        # Morphemes should only use Polynesian phonemes
+        morpheme_phonemes = set("".join(morphemes))
+        assert morpheme_phonemes.issubset(
+            expected_phonemes
+        ), f"Morphemes should only use Polynesian phonemes, but found: {morpheme_phonemes - expected_phonemes}"
+
 
 # Keep the original simple tests for backward compatibility, but updated for Forge
 def test_make_sylls():
@@ -309,24 +404,66 @@ def test_forge_swadesh_list_generation():
     from langforge import Forge
 
     # Should be able to generate Swadesh list directly
-    swadesh = Forge.swadesh("random")
+    swadesh = Forge.swadesh("japanese")
 
-    # Should contain basic Swadesh concepts
-    core_concepts = ["I", "you", "water", "fire", "sun", "moon", "tree", "stone"]
+    # Should contain basic Swadesh concepts (207 total)
+    core_concepts = [
+        "I",
+        "you",
+        "water",
+        "fire",
+        "sun",
+        "moon",
+        "tree",
+        "stone",
+        "eat",
+        "big",
+        "red",
+    ]
 
-    # Should have concept-to-word mapping
-    assert hasattr(swadesh, "concepts")
-    assert len(swadesh.concepts) > 0
+    # Should be a dictionary mapping concepts to words
+    assert isinstance(swadesh, dict)
+    assert len(swadesh) == 207
 
-    # Should contain some core concepts
-    swadesh_concept_keys = list(swadesh.concepts.keys())
-    assert any(concept in swadesh_concept_keys for concept in core_concepts)
+    # Should contain expected core concepts
+    for concept in core_concepts:
+        assert concept in swadesh
+        assert len(swadesh[concept]) > 0
+        assert isinstance(swadesh[concept], str)
 
-    # Words should be linguistically valid (contain IPA characters)
-    sample_words = list(swadesh.concepts.values())[:5]
+    # Words should be linguistically valid morphemes
+    sample_words = [swadesh[concept] for concept in core_concepts]
     for word in sample_words:
         assert len(word) > 0
-        assert isinstance(word, str)
+        # Should be built from Japanese phonemes
+        japanese_phonemes = set("kasitemonaruhbpjgzdnweflouy")
+        assert all(char in japanese_phonemes for char in word)
+
+
+@pytest.mark.xfail(reason="Morpheme-based Swadesh generation not yet implemented")
+def test_forge_swadesh_uses_morphemes():
+    """Test that Swadesh generation uses morpheme generation under the hood"""
+    from langforge import Forge
+
+    forge = Forge()
+
+    # Should be able to generate Swadesh using morphemes
+    swadesh = forge.swadesh("polynesian")
+
+    # Should use same morpheme generation patterns
+    roots = forge.morphemes("polynesian", type="roots", count=20)
+
+    # Swadesh words should have similar characteristics to roots
+    swadesh_words = list(swadesh.values())[:20]
+
+    # Average lengths should be similar (both using same language patterns)
+    avg_swadesh_len = sum(len(word) for word in swadesh_words) / len(swadesh_words)
+    avg_root_len = sum(len(root) for root in roots) / len(roots)
+
+    # Should be within reasonable range
+    assert (
+        abs(avg_swadesh_len - avg_root_len) < 1.0
+    ), "Swadesh words should have similar lengths to generated roots"
 
 
 @pytest.mark.xfail(reason="Fluent interface chaining not yet implemented")

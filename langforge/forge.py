@@ -419,6 +419,66 @@ class Forge:
         """
         return GeneratedLanguage(template)
 
+    def morphemes(
+        self, template: str = "random", type: str = "roots", count: int = 20
+    ) -> List[str]:
+        """
+        Generate morphemes using existing syllable patterns.
+
+        Args:
+            template: Language family template to use
+            type: Type of morphemes ("roots" or "affixes")
+            count: Number of morphemes to generate
+
+        Returns:
+            List of morpheme strings
+        """
+        # Create a language to get consistent phoneme inventory
+        language = self.generate(template)
+        syllable_gen = language._syllable_generator
+
+        # Generate morphemes with appropriate lengths
+        morphemes = []
+        for _ in range(count):
+            # Determine morpheme length based on language and type
+            length = self._get_morpheme_length(template, type)
+
+            # Generate syllables and combine into morpheme
+            syllables = syllable_gen.generate_syllables(length)
+            morpheme = "".join(syllables)
+            morphemes.append(morpheme)
+
+        return morphemes
+
+    def _get_morpheme_length(self, template: str, type: str) -> int:
+        """Determine syllable count for morpheme based on language and type."""
+
+        if type == "roots":
+            if template == "japanese":
+                return random.choices([1, 2, 3], weights=[0.1, 0.7, 0.2])[
+                    0
+                ]  # Favor 2-syllable
+            elif template == "polynesian":
+                return random.choices([1, 2], weights=[0.6, 0.4])[
+                    0
+                ]  # Favor 1-syllable, simpler
+            elif template == "germanic":
+                return random.choices([1, 2], weights=[0.6, 0.4])[0]
+            elif template == "romance":
+                return random.choices([1, 2, 3], weights=[0.2, 0.6, 0.2])[0]
+            elif template == "sinitic":
+                return random.choices([1, 2], weights=[0.7, 0.3])[0]
+            else:  # random
+                return random.choices([1, 2, 3], weights=[0.4, 0.4, 0.2])[0]
+
+        elif type == "affixes":
+            # Most affixes are single syllables across languages
+            return 1
+
+        else:
+            # Default to single syllable
+            return 1
+
     def __repr__(self):
         """Return a string representation of the Forge instance."""
         return f"Forge(version='{__import__('langforge').__version__}')"

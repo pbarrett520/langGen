@@ -7,7 +7,7 @@ from phonemic inventory through Swadesh lists to example sentences.
 
 __version__ = "0.1.0"
 
-from .forge import Forge
+from .forge import Forge, SwadeshList
 
 # Future exports will be added here as functionality grows
-__all__ = ["Forge"]
+__all__ = ["Forge", "SwadeshList"]

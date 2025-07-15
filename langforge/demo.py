@@ -4,6 +4,20 @@ LangForge Demo - Algorithmic Constructed Language Generator
 
 A beautiful demonstration of phonologically realistic language generation.
 Perfect for showcasing the project's capabilities.
+
+NOTE: This demo focuses on Phase 1 (phonology) and Phase 2 (morphemes).
+For a complete demonstration including Phase 3 (word building, Swadesh lists, export),
+see demo_unified.py which provides a comprehensive, interview-ready showcase.
+
+Use this demo for:
+- Focused exploration of phonological systems
+- Educational demonstrations of syllable generation
+- Development and testing of morpheme capabilities
+
+Use demo_unified.py for:
+- Complete feature demonstrations
+- Interviews and presentations
+- Showcasing the full LangForge pipeline
 """
 
 import sys

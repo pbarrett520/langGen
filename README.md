@@ -14,20 +14,20 @@ LangForge creates linguistically coherent constructed languages that produce:
 
 Inspired by [VulgarLang](https://www.vulgarlang.com/how-it-works/), but built with a library-first, test-driven architecture.
 
-## 🎉 **PHASE 3 COMPLETE: Production Ready!**
+## **PHASE 3 COMPLETE: Production Ready!**
 
-### ✅ **Major Achievement: Complete Language Generation Pipeline**
+### **Major Achievement: Complete Language Generation Pipeline**
 LangForge now provides a **complete pipeline** from phonological generation to exportable vocabularies:
 
-- **✅ Phase 1**: Advanced syllable generation across 5 language families
-- **✅ Phase 2**: Morpheme generation (roots & affixes) with linguistic realism  
-- **✅ Phase 3**: Word building, Swadesh list generation, and professional export
-- **✅ Test Coverage**: **59 passing tests** ensuring production reliability
-- **✅ Demo Ready**: Professional demonstration scripts for interviews and showcases
+- **Phase 1**: Advanced syllable generation across 5 language families
+- **Phase 2**: Morpheme generation (roots & affixes) with linguistic realism  
+- **Phase 3**: Word building, Swadesh list generation, and professional export
+- **Test Coverage**: **59 passing tests** ensuring production reliability
+- **Demo Ready**: Professional demonstration scripts for interviews and showcases
 
-### 🚀 **Complete Feature Set**
+### **Complete Feature Set**
 
-**🔊 Phonological Systems** (5 Language Families + Random)
+**Phonological Systems** (5 Language Families + Random)
 - **Polynesian**: Simple CV syllables - Hawaiian, Samoan, Maori
 - **Japanese**: Strict CV(n) patterns - minimal clusters
 - **Germanic**: Complex consonant clusters - English, German  
@@ -35,23 +35,23 @@ LangForge now provides a **complete pipeline** from phonological generation to e
 - **Sinitic**: Tonal-ready with limited finals - Mandarin
 - **Random**: Truly random generation with 50+ phoneme combinations
 
-**🧱 Morphological Generation**
+**Morphological Generation**
 - Root morpheme generation using syllable patterns
 - Affix systems (prefixes, suffixes) with language-specific complexity
 - Language-appropriate morpheme lengths and structures
 
-**📝 Word Building & Vocabulary**
+**Word Building & Vocabulary**
 - Multiple strategies: simple, complex, mixed morphological approaches
 - Intelligent morpheme combination respecting phonotactic constraints
 - Realistic word length distributions per language family
 
-**📚 Swadesh List Generation**
+**Swadesh List Generation**
 - Complete 207-concept Swadesh list support
 - Configurable concept counts for targeted vocabulary
 - Semantic category organization and prioritization
 - Phonologically consistent word generation
 
-**💾 Professional Export**
+**Professional Export**
 - CSV export for spreadsheet analysis
 - JSON export with complete language metadata
 - Auto-format detection from file extensions
@@ -121,7 +121,7 @@ Swadesh: I→boku, you→kimi, water→mizu
 
 ## Professional Demonstrations
 
-### 🎯 **Unified Demo Script** (Interview Ready!)
+### **Unified Demo Script**
 
 Run the comprehensive, beautifully formatted demonstration:
 
@@ -130,10 +130,10 @@ python demo_unified.py
 ```
 
 **Perfect for:**
-- 🎯 Technical interviews - Shows systematic thinking
-- 🎪 Demo sessions - Engaging comprehensive overview  
-- 🤝 Showing off to friends - Beautiful, impressive output
-- 📚 Documentation - Complete feature reference
+- Technical interviews - Shows systematic thinking
+- Demo sessions - Engaging comprehensive overview  
+- Showing off to friends - Beautiful, impressive output
+- Documentation - Complete feature reference
 
 **Includes:**
 - Complete pipeline demonstration
@@ -142,7 +142,7 @@ python demo_unified.py
 - Technical achievements metrics
 - Future development roadmap
 
-### 📋 **Specialized Demo Scripts**
+### **Specialized Demo Scripts**
 
 ```bash
 # Original demo - Phase 1 & 2 focus
@@ -174,12 +174,12 @@ python -m pytest tests.py::TestForge -v
 ```
 
 ### **59 Passing Tests** Validate:
-- ✅ **Phase 1**: Phonological generation across 5 families
-- ✅ **Phase 2**: Morpheme generation with linguistic realism  
-- ✅ **Phase 3**: Word building, Swadesh lists, export functionality
-- ✅ **Quality**: Linguistic realism and consistency validation
-- ✅ **API**: Complete public interface testing
-- ✅ **Integration**: End-to-end pipeline validation
+- **Phase 1**: Phonological generation across 5 families
+- **Phase 2**: Morpheme generation with linguistic realism  
+- **Phase 3**: Word building, Swadesh lists, export functionality
+- **Quality**: Linguistic realism and consistency validation
+- **API**: Complete public interface testing
+- **Integration**: End-to-end pipeline validation
 
 ### Test Categories
 - **Multi-language family validation** (5 language families)
@@ -261,12 +261,12 @@ forge.export(swadesh, "complete.json", format="json",    # With metadata
 ```
 langGen/langforge/
 ├── __init__.py              # Package exports (Forge, SwadeshList)
-├── forge.py                 # ✅ Complete pipeline: phonology → vocabulary
-├── demo_unified.py          # ✅ Professional demonstration script
-├── demo.py                  # ✅ Phase 1&2 focused demo
-├── demo_phase3.py           # ✅ Phase 3 specific demo
-├── tests.py                 # ✅ 59 comprehensive tests
-├── README_DEMO.md           # ✅ Demo documentation
+├── forge.py                 # Complete pipeline: phonology → vocabulary
+├── demo_unified.py          # Professional demonstration script
+├── demo.py                  # Phase 1&2 focused demo
+├── demo_phase3.py           # Phase 3 specific demo
+├── tests.py                 # 59 comprehensive tests
+├── README_DEMO.md           # Demo documentation
 ├── phones.py                # Legacy phoneme data
 ├── *.csv                    # IPA phoneme reference data
 └── debugging.ipynb          # Development notebook
@@ -274,25 +274,25 @@ langGen/langforge/
 
 ## Roadmap
 
-### ✅ **Phase 1 COMPLETE**: Advanced Phonological Systems
+###  **Phase 1 COMPLETE**: Advanced Phonological Systems
 - Multi-language family support (Polynesian, Japanese, Germanic, Romance, Sinitic)
 - Truly random generation with varied phoneme inventories  
 - Weighted syllable structure generation
 - Position-sensitive phonotactic constraints
 
-### ✅ **Phase 2 COMPLETE**: Morpheme Generation  
+###  **Phase 2 COMPLETE**: Morpheme Generation  
 - Root morpheme generation using syllable patterns
 - Affix systems with language-specific complexity
 - Linguistic realism validation
 - TDD methodology proven effective
 
-### ✅ **Phase 3 COMPLETE**: Word Building & Vocabulary
+###  **Phase 3 COMPLETE**: Word Building & Vocabulary
 - Intelligent word building strategies  
 - Complete Swadesh list generation (207 concepts)
 - Professional CSV/JSON export capabilities
 - Production-ready demonstration scripts
 
-### 🔮 **Phase 4 FUTURE**: Advanced Linguistic Features
+###  **Phase 4 FUTURE**: Advanced Linguistic Features
 - **Grammar Generation**: Basic syntactic rules and sentence structure
 - **Orthography Systems**: Writing system generation (alphabets, syllabaries)
 - **Phonological Change**: Simulate historical language evolution
@@ -300,12 +300,12 @@ langGen/langforge/
 - **Web Interface**: Browser-based language generation tool
 - **Community Platform**: Share and explore generated languages
 
-### 🎯 **Applications Ready For**
-- 🎮 **Game Development**: Rich, believable fantasy worlds
-- 📚 **Creative Writing**: Authentic fictional cultures  
-- 🎓 **Linguistic Education**: Hands-on phonology learning
-- 🔬 **Research Tool**: Systematic language comparison
-- 🎬 **Entertainment Industry**: Film and TV language creation
+###  **Applications Ready For**
+- **Game Development**: Rich, believable fantasy worlds
+- **Creative Writing**: Authentic fictional cultures  
+- **Linguistic Education**: Hands-on phonology learning
+- **Research Tool**: Systematic language comparison
+- **Entertainment Industry**: Film and TV language creation
 
 ## Technical Excellence
 
@@ -323,8 +323,8 @@ langGen/langforge/
 - **Extensibility**: Easy to add new language families and features
 - **Reliability**: Deterministic output for reproducible results
 
-Built with ❤️ for the constructed language community.
+Built with  for the constructed language community.
 
 ---
 
-**Ready for production use in creative, educational, and research applications! 🚀**
+**Ready for production use in creative, educational, and research applications!**

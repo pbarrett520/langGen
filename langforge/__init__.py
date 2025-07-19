@@ -9,5 +9,5 @@ __version__ = "0.1.0"
 
 from .forge import Forge, SwadeshList
 
-# Future exports will be added here as functionality grows
-__all__ = ["Forge", "SwadeshList"]
+# Add explicit type annotations for better IDE support
+__all__: list[str] = ["Forge", "SwadeshList"]
